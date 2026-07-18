@@ -1,0 +1,286 @@
+/* ============================================================
+   layout.css
+   앱 셸(App Shell) 레이아웃
+   ------------------------------------------------------------
+   Teacher Apps는 여러 기능(Home, Timer, ...)이 하나의 앱 안에서
+   전환되는 SPA(Single Page App) 구조입니다.
+   각 기능 화면은 <section class="view" data-view="...">로 정의되고
+   app.js가 하나만 보이도록 전환합니다.
+   ============================================================ */
+
+#app {
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------- 상단 헤더 ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-2);
+  flex-shrink: 0;
+}
+
+.app-header__title {
+  font-size: var(--font-size-title1);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-header__back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: var(--color-accent);
+  padding: var(--spacing-1) var(--spacing-1) var(--spacing-1) 0;
+}
+
+.app-header__back svg {
+  width: 26px;
+  height: 26px;
+}
+
+.app-header__icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+  color: var(--text-primary);
+}
+
+.app-header__icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- 뷰(화면) 전환 ---------- */
+.view {
+  flex: 1;
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: view-in var(--duration-medium) var(--ease-standard);
+}
+
+.view.is-active {
+  display: flex;
+}
+
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 공통 카드 ---------- */
+.card {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- 공통 Primary / Secondary 버튼 ---------- */
+.btn {
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  padding: 16px 28px;
+  border-radius: var(--radius-small);
+  transition: transform var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+  min-height: 56px; /* 원거리 조작을 위한 큰 터치 영역 */
+}
+
+.btn:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--text-on-accent);
+}
+
+.btn--secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--color-timer-warn);
+}
+
+.btn--icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.btn--icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ---------- Bottom Sheet (설정, 즐겨찾기 편집 등 공통 사용) ---------- */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-medium) var(--ease-standard);
+}
+
+.sheet-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+  box-shadow: var(--shadow-elevated);
+  z-index: 51;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform var(--duration-medium) var(--ease-standard);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sheet.is-open {
+  transform: translateY(0);
+}
+
+.sheet__grabber {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--bg-secondary);
+  margin: 12px auto 4px;
+  flex-shrink: 0;
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2) var(--spacing-3);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--separator);
+}
+
+.sheet__title {
+  font-size: var(--font-size-title2);
+  font-weight: 700;
+}
+
+.sheet__done {
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: var(--font-size-body);
+}
+
+.sheet__body {
+  padding: var(--spacing-2) var(--spacing-3) var(--spacing-4);
+  overflow-y: auto;
+}
+
+/* ---------- 설정 목록형 Row (iOS Settings 스타일) ---------- */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2) var(--spacing-1);
+  border-bottom: 1px solid var(--separator);
+  font-size: var(--font-size-body);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-row__label {
+  font-weight: 500;
+}
+
+/* ---------- Toggle Switch ---------- */
+.switch {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  transition: background var(--duration-fast) var(--ease-standard);
+  flex-shrink: 0;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.switch.is-on {
+  background: var(--color-success);
+}
+
+.switch.is-on::after {
+  transform: translateX(20px);
+}
+
+/* ---------- Color Swatch 선택 ---------- */
+.swatch-row {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  padding: var(--spacing-2) var(--spacing-1);
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.swatch.is-selected {
+  border-color: var(--text-primary);
+  transform: scale(1.08);
+}
+
+/* ---------- 반응형 (iPhone 세로 등 좁은 화면) ---------- */
+@media (max-width: 430px) {
+  .app-header {
+    padding: var(--spacing-2) var(--spacing-2) var(--spacing-1);
+  }
+}
