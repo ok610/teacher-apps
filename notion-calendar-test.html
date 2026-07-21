@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Notion Calendar Web Test — Teacher Apps</title>
+
+  <!-- ============================================================
+       이 페이지는 Teacher Apps 본체(index.html)의 SPA 구조에 넣지 않고
+       완전히 독립된 정적 페이지로 만들었습니다.
+       이유: "테스트 페이지"라는 목적상 나중에 필요 없어지면 이 파일
+       하나만 지우면 되고, 기존 index.html/app.js/timer.js 등은 전혀
+       건드리지 않아도 되기 때문입니다.
+
+       디자인은 기존 프로젝트와 통일감을 주기 위해
+       variables.css / reset.css / components.css / layout.css를
+       그대로 재사용하고, theme.js도 불러와서 사용자가 설정한
+       앱 테마(Forest/Ocean/Purple 등)가 이 페이지에도 동일하게
+       적용되도록 했습니다. (기존 CSS/JS 파일은 전혀 수정하지 않았습니다)
+       ============================================================ -->
+  <link rel="stylesheet" href="./css/variables.css" />
+  <link rel="stylesheet" href="./css/reset.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <script src="./js/storage.js"></script>
+  <script src="./js/theme.js"></script>
+
+  <style>
+    /* 이 테스트 페이지에서만 쓰는 최소한의 레이아웃 스타일
+       (공용 CSS 파일은 건드리지 않고 이 파일 안에만 둡니다) */
+    body {
+      background: var(--bg-primary);
+      min-height: 100dvh;
+    }
+
+    .test-page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: env(safe-area-inset-top) var(--spacing-4) var(--spacing-5);
+    }
+
+    .test-page__desc {
+      color: var(--text-secondary);
+      font-size: var(--font-size-body);
+      line-height: 1.55;
+      margin: var(--spacing-1) 0 var(--spacing-3);
+    }
+
+    .test-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .test-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-2);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-medium);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-2) var(--spacing-3);
+    }
+
+    .test-item__label {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .test-item__desc {
+      font-size: var(--font-size-caption);
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    .test-item .btn {
+      flex-shrink: 0;
+      min-width: 84px;
+    }
+
+    .info-card {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-medium);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-3);
+      font-size: var(--font-size-caption);
+      color: var(--text-secondary);
+    }
+
+    .info-card__row + .info-card__row {
+      margin-top: var(--spacing-2);
+    }
+
+    .info-card__label {
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .info-card__value {
+      word-break: break-all;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-page">
+    <header class="app-header" style="padding-left:0; padding-right:0;">
+      <a href="./index.html" class="app-header__back">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        홈
+      </a>
+      <h1 class="app-header__title" style="font-size:1.3rem;">Notion Calendar Web Test</h1>
+      <div style="width:44px;"></div>
+    </header>
+
+    <p class="test-page__desc">
+      iPad에서 Notion Calendar를 앱이 아닌 웹으로 여는 6가지 방법을 테스트하는 페이지입니다.
+      아래 버튼을 하나씩 눌러 Safari에서 어떤 방식이 가장 자연스럽게 동작하는지 확인해보세요.
+    </p>
+
+    <div class="test-list">
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">1. 일반 링크</div>
+          <div class="test-item__desc">&lt;a href="..."&gt;</div>
+        </div>
+        <a class="btn btn--secondary btn--sm" href="https://calendar.notion.so">열기</a>
+      </div>
+
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">2. 새 탭으로 열기</div>
+          <div class="test-item__desc">target="_blank"</div>
+        </div>
+        <a class="btn btn--secondary btn--sm" href="https://calendar.notion.so" target="_blank" rel="noopener noreferrer">열기</a>
+      </div>
+
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">3. window.open()</div>
+          <div class="test-item__desc">JavaScript로 새 창/탭 열기</div>
+        </div>
+        <button type="button" class="btn btn--secondary btn--sm" id="btn-window-open">열기</button>
+      </div>
+
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">4. location.href</div>
+          <div class="test-item__desc">현재 탭에서 바로 이동</div>
+        </div>
+        <button type="button" class="btn btn--secondary btn--sm" id="btn-location-href">열기</button>
+      </div>
+
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">5. location.replace()</div>
+          <div class="test-item__desc">뒤로가기 기록 없이 이동</div>
+        </div>
+        <button type="button" class="btn btn--secondary btn--sm" id="btn-location-replace">열기</button>
+      </div>
+
+      <div class="test-item">
+        <div>
+          <div class="test-item__label">6. 1초 후 자동 이동</div>
+          <div class="test-item__desc">setTimeout(1000ms) 후 이동</div>
+        </div>
+        <button type="button" class="btn btn--primary btn--sm" id="btn-auto-redirect">시작</button>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card__row">
+        <div class="info-card__label">현재 브라우저 (User Agent)</div>
+        <div class="info-card__value" id="info-ua"></div>
+      </div>
+      <div class="info-card__row">
+        <div class="info-card__label">현재 URL</div>
+        <div class="info-card__value" id="info-url"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* 이 페이지 전용 스크립트 - 다른 파일에 영향 없음 */
+    (function () {
+      var TARGET_URL = "https://calendar.notion.so";
+
+      document.getElementById("btn-window-open").addEventListener("click", function () {
+        window.open(TARGET_URL, "_blank");
+      });
+
+      document.getElementById("btn-location-href").addEventListener("click", function () {
+        window.location.href = TARGET_URL;
+      });
+
+      document.getElementById("btn-location-replace").addEventListener("click", function () {
+        window.location.replace(TARGET_URL);
+      });
+
+      var autoBtn = document.getElementById("btn-auto-redirect");
+      autoBtn.addEventListener("click", function () {
+        autoBtn.disabled = true;
+        autoBtn.textContent = "1초 후 이동...";
+        window.setTimeout(function () {
+          window.location.href = TARGET_URL;
+        }, 1000);
+      });
+
+      document.getElementById("info-ua").textContent = navigator.userAgent;
+      document.getElementById("info-url").textContent = window.location.href;
+    })();
+  </script>
+</body>
+</html>

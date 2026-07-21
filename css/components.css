@@ -1,0 +1,437 @@
+/* ============================================================
+   components.css
+   Teacher Apps 공통 디자인 시스템 (Design System)
+   ------------------------------------------------------------
+   앞으로 Lucky Draw / Team Generator / OX Quiz 등 새 기능이
+   추가되어도 이 파일의 클래스만 재사용하면 Timer와 똑같은
+   "느낌"을 자동으로 갖게 됩니다. 기능별 CSS 파일에서는 여기 없는
+   레이아웃만 추가하고, 색/여백/버튼 같은 기본 요소는 항상 이
+   파일의 클래스를 사용해주세요.
+
+   포함된 컴포넌트
+     - Button (.btn)
+     - Card (.card)
+     - Chip (.chip)
+     - Toggle Switch (.toggle-switch)
+     - Input / Number Field (.field)
+     - Setting Item (.setting-item)
+     - Bottom Sheet (.sheet)
+     - Side Panel (.side-panel)
+     - Empty State (.empty-state)
+
+   Dialog / Modal / Toast는 아직 어떤 기능도 사용하지 않으므로
+   지금 미리 만들지 않았습니다. Lucky Draw 등에서 실제로 필요한
+   시점에 이 파일에 추가하는 것을 권장합니다 (안 쓰는 컴포넌트를
+   미리 만들면 오히려 유지보수 부담이 커집니다).
+   ============================================================ */
+
+/* ---------------------------------------------------------
+   Button
+   --------------------------------------------------------- */
+.btn {
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 28px;
+  border-radius: var(--radius-pill);
+  min-height: 56px; /* 원거리 조작을 위한 큰 터치 영역 */
+  transition: transform var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard),
+    background var(--duration-medium) var(--ease-standard),
+    color var(--duration-medium) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--text-on-accent);
+}
+
+.btn--secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--color-timer-warn);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--sm {
+  padding: 10px 18px;
+  min-height: 40px;
+  font-size: var(--font-size-caption);
+}
+
+.btn--icon {
+  width: 60px;
+  height: 60px;
+  min-height: 0;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.btn--icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   Card
+   --------------------------------------------------------- */
+.card {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------------------------------------------------------
+   Chip (즐겨찾기 등에서 재사용)
+   --------------------------------------------------------- */
+.chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+  border: 1px solid transparent;
+  transition: transform var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chip:active {
+  transform: scale(0.95);
+}
+
+.chip--accent {
+  background: var(--color-accent);
+}
+
+/* ---------------------------------------------------------
+   Toggle Switch
+   --------------------------------------------------------- */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.toggle-switch__track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  transition: background var(--duration-fast) var(--ease-standard);
+  pointer-events: none;
+}
+
+.toggle-switch__track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.toggle-switch input:checked + .toggle-switch__track {
+  background: var(--color-accent);
+}
+
+.toggle-switch input:checked + .toggle-switch__track::after {
+  transform: translateX(20px);
+}
+
+/* ---------------------------------------------------------
+   Input / Number Field
+   --------------------------------------------------------- */
+.field {
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  padding: 14px 16px;
+  min-height: 52px;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.field::placeholder {
+  color: var(--text-tertiary);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.field--number {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+select.field {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2.4'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+  padding-right: 40px;
+}
+
+/* ---------------------------------------------------------
+   Setting Item (설정 화면 Row)
+   --------------------------------------------------------- */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) 2px;
+  border-bottom: 1px solid var(--separator);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item__label {
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.setting-item__hint {
+  font-size: var(--font-size-caption);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.settings-section {
+  margin-bottom: var(--spacing-4);
+}
+
+.settings-section__title {
+  font-size: var(--font-size-caption);
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 2px;
+  margin-bottom: var(--spacing-1);
+}
+
+/* ---------------------------------------------------------
+   Bottom Sheet
+   --------------------------------------------------------- */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-medium) var(--ease-standard);
+}
+
+.sheet-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+  box-shadow: var(--shadow-elevated);
+  z-index: 51;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform var(--duration-medium) var(--ease-spring);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sheet.is-open {
+  transform: translateY(0);
+}
+
+.sheet__grabber {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--bg-secondary);
+  margin: 12px auto 4px;
+  flex-shrink: 0;
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2) var(--spacing-3);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--separator);
+}
+
+.sheet__title {
+  font-size: var(--font-size-title2);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sheet__done {
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: var(--font-size-body);
+}
+
+.sheet__body {
+  padding: var(--spacing-2) var(--spacing-3) var(--spacing-4);
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------
+   Side Panel (설정 등 - 오른쪽에서 슬라이드)
+   --------------------------------------------------------- */
+.side-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-medium) var(--ease-standard);
+}
+
+.side-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 92vw);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-elevated);
+  z-index: 61;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--duration-medium) var(--ease-spring);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.side-panel.is-open {
+  transform: translateX(0);
+}
+
+.side-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--separator);
+}
+
+.side-panel__title {
+  font-size: var(--font-size-title2);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.side-panel__close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.side-panel__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.side-panel__body {
+  padding: var(--spacing-3);
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ---------------------------------------------------------
+   Empty State
+   --------------------------------------------------------- */
+.empty-state {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-caption);
+  padding: var(--spacing-2) 2px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   반응형: 모바일에서는 Side Panel이 전체 폭
+   --------------------------------------------------------- */
+@media (max-width: 480px) {
+  .side-panel {
+    width: 100vw;
+  }
+}
